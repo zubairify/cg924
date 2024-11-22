@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zs.entity.Stock;
+import com.zs.exception.StockNotFoundException;
 import com.zs.service.StockService;
 
 @RestController
@@ -25,12 +26,18 @@ public class StockController {
 	@PostMapping(value = "/add", consumes = "application/json")
 	public ResponseEntity<String> addStock(@RequestBody Stock s) {
 		service.add(s);
-		return new ResponseEntity<String>("Stock added.", HttpStatus.OK);
+		return ResponseEntity.ok("Stock added");
+//		return new ResponseEntity<String>("Stock added.", HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{sid}", produces = "application/json")
-	public ResponseEntity<Stock> getStock(@PathVariable int sid) {
-		return new ResponseEntity<Stock>(service.get(sid), HttpStatus.OK);
+	public ResponseEntity<?> getStock(@PathVariable int sid) {
+		try {
+			Stock s = service.get(sid);
+			return ResponseEntity.ok(s);
+		} catch (StockNotFoundException e) {
+			return ResponseEntity.notFound().header("message", e.getMessage()).build();
+		}
 	}
 	
 	@GetMapping(value = "/list", produces = "application/json")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zs.entity.Stock;
+import com.zs.exception.StockNotFoundException;
 import com.zs.repo.StockRepository;
 
 @Service
@@ -21,7 +22,7 @@ public class StockServiceImpl implements StockService {
 
 	@Override
 	public Stock get(int sid) {
-		return repo.findById(sid).get();
+		return repo.findById(sid).orElseThrow(() -> new StockNotFoundException("Invalid stock id"));
 	}
 
 	@Override
