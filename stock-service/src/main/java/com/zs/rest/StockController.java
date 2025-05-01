@@ -3,7 +3,6 @@ package com.zs.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,6 @@ public class StockController {
 	public ResponseEntity<String> addStock(@RequestBody Stock s) {
 		service.add(s);
 		return ResponseEntity.ok("Stock added");
-//		return new ResponseEntity<String>("Stock added.", HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{sid}", produces = "application/json")
@@ -36,12 +34,12 @@ public class StockController {
 			Stock s = service.get(sid);
 			return ResponseEntity.ok(s);
 		} catch (StockNotFoundException e) {
-			return ResponseEntity.notFound().header("message", e.getMessage()).build();
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
 	@GetMapping(value = "/list", produces = "application/json")
 	public ResponseEntity<List<Stock>> listStock() {
-		return new ResponseEntity<List<Stock>>(service.list(), HttpStatus.OK);
+		return ResponseEntity.ok(service.list());
 	}
 }
